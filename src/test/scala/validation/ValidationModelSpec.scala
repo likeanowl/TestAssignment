@@ -107,7 +107,7 @@ class ValidationModelSpec extends AnyFlatSpec {
       .zip(expected).foreach(pair => assertResult(pair._2)(pair._1))
   }
 
-  it should "work correctly and log errors if they occur" in {
+  it should "handle and log errors if they occur" in {
     val wrongJson =
       """{
             "uuid": "123e4567-e89b-12d3-a456-426614174000",
