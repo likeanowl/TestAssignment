@@ -137,13 +137,13 @@ object ValidationModel {
   }
 
   private def validateKitchenSize(kitchenSize: Double): ValidationResult[Option[Double]] = {
-    if (kitchenSize == Double.NaN)
+    if (kitchenSize == Double.NegativeInfinity)
       None.validNec
     else if (kitchenSize < 0) KitchenSizeIsLowerThanZero.invalidNec else Option(kitchenSize).validNec
   }
 
   private def validateFlatLivingSize(livingSize: Double): ValidationResult[Option[Double]] = {
-    if (livingSize == Double.NaN)
+    if (livingSize == Double.NegativeInfinity)
       None.validNec
     else if (livingSize < 0) FlatLivingSizeIsLowerThanZero.invalidNec else Option(livingSize).validNec
   }
@@ -182,8 +182,8 @@ object ValidationModel {
 
   private def composeFlatData(cursor: HCursor): ValidationResult[FlatData] = (
     cursor.downField(OBJECT_DATA).get[Double](FLAT_SIZE),
-    cursor.downField(OBJECT_DATA).getOrElse[Double](FLAT_LIVING_SIZE)(Double.NaN),
-    cursor.downField(OBJECT_DATA).getOrElse[Double](KITCHEN_SIZE)(Double.NaN),
+    cursor.downField(OBJECT_DATA).getOrElse[Double](FLAT_LIVING_SIZE)(Double.NegativeInfinity),
+    cursor.downField(OBJECT_DATA).getOrElse[Double](KITCHEN_SIZE)(Double.NegativeInfinity),
     cursor.downField(OBJECT_DATA).getOrElse[Int](ROOMS_COUNT)(Int.MinValue)
     ).mapN((size, livingSize, kitchenSize, roomsCount) => (
     validateFlatSize(size),
@@ -196,7 +196,7 @@ object ValidationModel {
   private def composeRoomData(cursor: HCursor): ValidationResult[RoomData] = (
     cursor.downField(OBJECT_DATA).get[Double](ROOM_SIZE),
     cursor.downField(OBJECT_DATA).getOrElse[Int](ROOMS_COUNT)(Int.MinValue),
-    cursor.downField(OBJECT_DATA).getOrElse[Double](KITCHEN_SIZE)(Double.NaN)
+    cursor.downField(OBJECT_DATA).getOrElse[Double](KITCHEN_SIZE)(Double.NegativeInfinity)
     ).mapN((roomSize, roomsCount, kitchenSize) => (
     validateRoomSize(roomSize),
     validateRoomsCount(roomsCount),

@@ -134,4 +134,38 @@ class ValidationModelSpec extends AnyFlatSpec {
     assertResult(expected)(result)
   }
 
+  it should "handle cases with no optional parameters" in {
+    val jsonWithEmptyOptionalField =
+      """{
+            "uuid": "123e4567-e89b-12d3-a456-426614174000",
+            "price": 555555.0,
+            "dealType": "Sell",
+            "objectType": "Flat",
+            "objectData": {
+              "flatSize": 39.4
+            },
+            "address": "Kushelevskaya doroga, dom 32, kv 15",
+            "sellerData": {
+              "sellerName": "Bobby Bobby",
+              "sellerPhone": "+78005553535"
+            }
+        }
+      """
+
+    val expected = Advertisement(
+      UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
+      555555.0,
+      None,
+      Sell,
+      Flat,
+      FlatData(
+        39.4
+      ),
+      "Kushelevskaya doroga, dom 32, kv 15",
+      SellerData("Bobby Bobby", "+78005553535")
+    )
+
+    ValidationModel.validateAd(jsonWithEmptyOptionalField).foreach(result => assertResult(expected)(result))
+  }
+
 }
